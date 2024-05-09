@@ -43,7 +43,8 @@ dependencies {
     // Swagger UI(spring boot 3에서 사용)
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
 
-
+    // JSON문자열 처리를 위한 GSON
+    implementation 'com.google.code.gson:gson:2.10.1'
 }
 
 tasks.named('test') {

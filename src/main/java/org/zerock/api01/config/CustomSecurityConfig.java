@@ -16,7 +16,10 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.zerock.api01.security.APIUserDetailsService;
+import org.zerock.api01.security.filter.APILoginFilter;
+import org.zerock.api01.security.handler.APILoginSuccessHandler;
 
 @Configuration
 @Log4j2
@@ -62,8 +65,16 @@ public class CustomSecurityConfig {
         http.authenticationManager(authenticationManager);
 
         // APILoginFilter 설정....
+        APILoginFilter apiLoginFilter = new APILoginFilter("/generateToken");
+        apiLoginFilter.setAuthenticationManager(authenticationManager);
 
+        // APILoginFilter의 위치 조정 - UsernamePaswwordAuthenctionFilter이전에 동작해야 하는 필터이기 때문..
+        http.addFilterBefore(apiLoginFilter, UsernamePasswordAuthenticationFilter.class);
 
+        // APILoginSuccessHandler
+        APILoginSuccessHandler successHandler = new APILoginSuccessHandler();
+        // SuccessHandler 설정
+        apiLoginFilter.setAuthenticationSuccessHandler(successHandler);
 
         // 1. CSRF 토큰의 비활성화
         http.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable());
