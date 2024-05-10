@@ -39,7 +39,7 @@ public class JWTUtil {
                 .setHeader(headers)
                 .setClaims(payloads)
                 .setIssuedAt(Date.from(ZonedDateTime.now().toInstant()))
-                .setExpiration(Date.from(ZonedDateTime.now().plusMinutes(time).toInstant()))
+                .setExpiration(Date.from(ZonedDateTime.now().plusMinutes(days).toInstant()))
                 .signWith(SignatureAlgorithm.HS256, key.getBytes())
                 .compact();
 
@@ -50,6 +50,11 @@ public class JWTUtil {
     // 토큰 검증 메서드...
     public Map<String, Object> validateToken(String token) throws JwtException {
         Map<String, Object> claim = null;
+
+        claim = Jwts.parser()
+                .setSigningKey(key.getBytes()).build()
+                .parseSignedClaims(token)
+                .getBody();
 
         return claim;
     }
