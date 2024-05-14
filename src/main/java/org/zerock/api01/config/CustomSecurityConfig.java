@@ -88,7 +88,7 @@ public class CustomSecurityConfig {
 
         // api로 시작하는 모든 경로는 TokenCheckFilter 동작....
         http.addFilterBefore(
-                tokenCheckFilter(jwtUtil),
+                tokenCheckFilter(jwtUtil, apiUserDetailsService),
                 UsernamePasswordAuthenticationFilter.class
         );
 
@@ -131,8 +131,8 @@ public class CustomSecurityConfig {
     }
 
     // 토큰 체크 필터 객체 생성
-    private TokenCheckFilter tokenCheckFilter(JWTUtil jwtUtil) {
-        return new TokenCheckFilter(jwtUtil);
+    private TokenCheckFilter tokenCheckFilter(JWTUtil jwtUtil, APIUserDetailsService apiUserDetailsService) {
+        return new TokenCheckFilter(apiUserDetailsService, jwtUtil);
     }
 
 }
